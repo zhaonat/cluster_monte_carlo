@@ -9,10 +9,10 @@ N = (10,10,10,10);
 
 
 mag_v_temp =list();
-beta_scan = np.linspace(0.01, 0.13, 10);
+beta_scan = np.linspace(0.1, 0.13, 10);
 beta_near_crit = np.linspace(0.14, 0.25, 50);
 beta_scan = np.append(beta_scan, beta_near_crit);
-beta_scan = np.append(beta_scan, np.linspace(0.26, 0.5, 10));
+beta_scan = np.append(beta_scan, np.linspace(0.26, 1, 20));
 
 # we will run the simulation ONCE and save the lattice history and then simply analyze the lattice history
 # so we don't have to continuously run the simulation again and again;

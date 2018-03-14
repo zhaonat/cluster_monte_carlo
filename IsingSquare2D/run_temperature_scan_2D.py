@@ -10,10 +10,11 @@ N = (50,50);
 lattice_size_name = str(N[0])+'x'+str(N[1]);
 
 mag_v_temp =list();
-beta_scan = np.linspace(0.3, 0.34, 20);
+E_v_temp = list();
+beta_scan = np.linspace(0.2, 0.34, 30);
 beta_near_crit = np.linspace(0.35, 0.54, 60);
 beta_scan = np.append(beta_scan, beta_near_crit);
-beta_scan = np.append(beta_scan, np.linspace(0.55, 1, 10));
+beta_scan = np.append(beta_scan, np.linspace(0.55, 1, 20));
 
 simulation_data = dict(); #keys will be betas
 
@@ -23,44 +24,34 @@ simulation_data = dict(); #keys will be betas
 Lattice = 2 * np.random.randint(0, 2, N) - 1;
 
 ## ===============================================
-
+K_counter = 0;
 for K in beta_scan:
     lattice_history = list();
-
     epochs = 1500;
     print(K)
     p = 1 - np.exp(-2 * K);
-    magn = list();
+    magn = list(); ene = list();
     if(K> 0.4): #as temperature get higher, the lattice will equilibrate faster
-        epochs = 500;
+        epochs = 400;
     if(K> 0.6):
-        epochs = 200;
+        epochs = 300;
 
-    ## simulation runner
-    if(K > 0.5):
-        print('metropolis')
-        #run a metropolis hastings simulation
-        for t in range(epochs):
-            Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
+    #run a wolff simulation
+    for t in range(epochs):
+        Lattice = run_Wolff_epoch(Lattice, N, p);
+        if(t%100 == 0):
+            print(t);
+        if(t > 100):
             magn.append(magnetization(Lattice));
-            if(t%100 == 0):
-                print('epoch: '+str(t))
-            lattice_history.append(Lattice);
+            ene.append(energy(Lattice, 1)); #J = 1
+        lattice_history.append(Lattice);
 
-    else:
-        for t in range(epochs):
-            Lattice = run_Wolff_epoch(Lattice, N, p);
-            if(t%400 == 0):
-                print(t);
-                # plt.imshow(Lattice)
-                # plt.show();
-            if(t > 100):
-                magn.append(magnetization(Lattice));
-            lattice_history.append(Lattice);
-
-    simulation_data[K] = lattice_history;
+    simulation_data[K_counter] = lattice_history;
     M = np.mean(magn);
+    E = np.mean(ene);
     mag_v_temp.append(M);
+    E_v_temp.append(E);
+    K_counter+=1;
 
 ## ============= SAVE LATTICE HISTORY DATA =====================##
 pickle.dump([simulation_data, epochs, beta_scan, N], open(lattice_size_name+'_Ising_2D_Lattice_Temp_Scan.p', 'wb'));
@@ -68,14 +59,15 @@ pickle.dump([simulation_data, epochs, beta_scan, N], open(lattice_size_name+'_Is
 
 plt.figure();
 plt.plot(1/beta_scan, mag_v_temp)
+
+plt.figure();
+plt.plot(1/beta_scan, E_v_temp)
 plt.show()
 
 T_c = 1/2.269;
-## fit power laws
-critical_mag = fit_power_law(1/beta_scan, mag_v_temp, T_c);
-print(critical_mag);
-
-
+# ## fit power laws
+# critical_mag = fit_power_law(1/beta_scan, mag_v_temp, T_c);
+# print(critical_mag);
 
 # vars = ['m per site', 'E per site', 'spin_corr', 'chi', 'heat_capacity'];
 # for i in range(len(vars)):
@@ -85,5 +77,4 @@ print(critical_mag);
 #     plt.xlabel('temperature')
 #     plt.ylabel(vars[i])
 #     plt.savefig(vars[i]+'_vs_T.png');
-#
 # plt.show()
