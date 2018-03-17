@@ -7,7 +7,6 @@ from fitting_module.critical_exponents import fit_power_law
 import pickle
 N = (5,5,5,5,5);
 
-
 mag_v_temp =list();
 beta_scan = np.linspace(0.1, 0.21, 10);
 beta_near_crit = np.linspace(0.22, 0.3, 50);
@@ -16,20 +15,19 @@ beta_scan = np.append(beta_scan, np.linspace(0.3, 0.5, 10));
 
 # we will run the simulation ONCE and save the lattice history and then simply analyze the lattice history
 # so we don't have to continuously run the simulation again and again;
-
 T_c = 1/7;
 beta_c = 7
 simulation_data = dict(); #keys will be betas
 
-## ===========LATTICE INITIALIZATION ============##
+## ===========LATTICE INITIALIZATION =====================================##
 # we claim that it is better to do the initialization once and then run the simulation
 # as we run to the next temperature, the previous lattice will actually be not too far from thesteady state lattice of the next
 Lattice = 2 * np.random.randint(0, 2, N) - 1;
 
-## ===============================================
+## =======================================================================##
 for K in beta_scan:
+    Lattice = 2 * np.random.randint(0, 2, N) - 1;
     lattice_history = list();
-
     epochs = 1000;
     print(K)
     p = 1 - np.exp(-2 * K);
@@ -38,27 +36,27 @@ for K in beta_scan:
         epochs = 200;
     if(K> 0.3):
         epochs = 100;
-    if(K > 0.3):
-        print('metropolis')
-        epochs = 100;
-        #run a metropolis hastings simulation
-        for t in range(epochs):
-            Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
-            magn.append(magnetization(Lattice));
-            if(t%100 == 0):
-                print('epoch: '+str(t))
-            lattice_history = list();
+    # if(K > 0.3):
+    #     print('metropolis')
+    #     epochs = 100;
+    #     #run a metropolis hastings simulation
+    #     for t in range(epochs):
+    #         Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
+    #         magn.append(magnetization(Lattice));
+    #         if(t%100 == 0):
+    #             print('epoch: '+str(t))
+    #         lattice_history = list();
 
-    else:
-        for t in range(epochs):
-            Lattice = run_Wolff_epoch(Lattice, N, p);
-            if(t%400 == 0):
-                print(t);
-                # plt.imshow(Lattice)
-                # plt.show();
-            if(t > 100):
-                magn.append(magnetization(Lattice));
-            lattice_history = list();
+    for t in range(epochs):
+
+        Lattice = run_Wolff_epoch(Lattice, N, p);
+        if(t%400 == 0):
+            print(t);
+            # plt.imshow(Lattice)
+            # plt.show();
+        if(t > 100):
+            magn.append(magnetization(Lattice));
+        lattice_history = list();
     simulation_data[K] = lattice_history;
     M = np.mean(magn);
     mag_v_temp.append(M);
@@ -75,7 +73,6 @@ print(critical_mag);
 pickle.dump([simulation_data, epochs, beta_scan, N], open('Ising_5D_Lattice_Temp_Scan.p', 'wb'));
 ## ==============================================================
 plt.show()
-
 
 # vars = ['m per site', 'E per site', 'spin_corr', 'chi', 'heat_capacity'];
 # for i in range(len(vars)):

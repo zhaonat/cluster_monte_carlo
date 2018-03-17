@@ -5,7 +5,7 @@ from variable_calculations.order_measures import *
 from metropolis_hastings.metropolis import *
 from fitting_module.critical_exponents import fit_power_law
 import pickle
-N = (10,10,10,10);
+N = (8,8,8,8);
 
 
 mag_v_temp =list();
@@ -27,6 +27,8 @@ Lattice = 2 * np.random.randint(0, 2, N) - 1;
 
 ## ===============================================
 for K in beta_scan:
+    Lattice = 2 * np.random.randint(0, 2, N) - 1;
+
     lattice_history = list();
 
     epochs = 1000;
@@ -37,27 +39,27 @@ for K in beta_scan:
         epochs = 300;
     if(K> 0.3):
         epochs = 100;
-    if(K > 0.3):
-        print('metropolis')
-        epochs = 100;
-        #run a metropolis hastings simulation
-        for t in range(epochs):
-            Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
-            magn.append(magnetization(Lattice));
-            if(t%100 == 0):
-                print('epoch: '+str(t))
-            lattice_history.append(Lattice);
+    # if(K > 0.3):
+    #     print('metropolis')
+    #     epochs = 100;
+    #     #run a metropolis hastings simulation
+    #     for t in range(epochs):
+    #         Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
+    #         magn.append(magnetization(Lattice));
+    #         if(t%100 == 0):
+    #             print('epoch: '+str(t))
+    #         lattice_history.append(Lattice);
 
-    else:
-        for t in range(epochs):
-            Lattice = run_Wolff_epoch(Lattice, N, p);
-            if(t%400 == 0):
-                print(t);
-                # plt.imshow(Lattice)
-                # plt.show();
-            if(t > 100):
-                magn.append(magnetization(Lattice));
-            lattice_history.append(Lattice);
+
+    for t in range(epochs):
+        Lattice = run_Wolff_epoch(Lattice, N, p);
+        if(t%400 == 0):
+            print(t);
+            # plt.imshow(Lattice)
+            # plt.show();
+        if(t > 100):
+            magn.append(magnetization(Lattice));
+        lattice_history.append(Lattice);
 
     simulation_data[K] = lattice_history;
     M = np.mean(magn);

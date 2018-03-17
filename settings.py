@@ -1,4 +1,4 @@
 import os
 
-ROOT_DIR = 'D:\\StanfordYearTwo\\cluster_monte_carlo\\';
+ROOT_DIR = 'D:\\Documents\\Classes\\MonteCarlo\\';
 #print(ROOT_DIR)

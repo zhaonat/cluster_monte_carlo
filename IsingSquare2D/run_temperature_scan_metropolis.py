@@ -6,6 +6,11 @@ from metropolis_hastings.metropolis import *
 from fitting_module.critical_exponents import fit_power_law
 import pickle
 
+'''
+illustrates that the metropolis algorithm is incomparably slow relative to the cluster algorithm
+most particularly at high temperatures
+'''
+
 N = (40,40);
 lattice_size_name = str(N[0])+'x'+str(N[1]);
 
@@ -29,24 +34,32 @@ for K in beta_scan:
     Lattice = 2 * np.random.randint(0, 2, N) - 1;
 
     lattice_history = list();
-    epochs = 15000;
+    epochs = 1500;
     print(K)
     p = 1 - np.exp(-2 * K);
     magn = list(); ene = list();
     if(K> 0.4): #as temperature get higher, the lattice will equilibrate faster
-        epochs = 10000;
+        epochs = 1000;
     if(K> 0.6):
-        epochs = 10000;
+        epochs = 1000;
 
-    #run a wolff simulation
+    #run a metropolis hastings simulation
     for t in range(epochs):
-        Lattice = run_Wolff_epoch(Lattice, N, p);
+        Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
+        magn.append(magnetization(Lattice));
         if(t%100 == 0):
-            print(t);
-        if(t > 100):
-            magn.append(magnetization(Lattice));
-            ene.append(energy(Lattice, 1)); #J = 1
-        lattice_history.append(Lattice);
+            print('epoch: '+str(t))
+        lattice_history = list();
+
+    # #run a wolff simulation
+    # for t in range(epochs):
+    #     Lattice = run_Wolff_epoch(Lattice, N, p);
+    #     if(t%100 == 0):
+    #         print(t);
+    #     if(t > 100):
+    #         magn.append(magnetization(Lattice));
+    #         ene.append(energy(Lattice, 1)); #J = 1
+    #     lattice_history.append(Lattice);
 
     simulation_data[K_counter] = lattice_history;
     M = np.mean(magn);
@@ -56,7 +69,7 @@ for K in beta_scan:
     K_counter+=1;
 
 ## ============= SAVE LATTICE HISTORY DATA =====================##
-pickle.dump([simulation_data, epochs, beta_scan, N], open(lattice_size_name+'_Ising_2D_random_Lattice_Temp_Scan.p', 'wb'));
+pickle.dump([simulation_data, epochs, beta_scan, N], open(lattice_size_name+'_Ising_2D_random_Lattice_Temp_Scan_metropolis.p', 'wb'));
 ## ==============================================================
 
 plt.figure();

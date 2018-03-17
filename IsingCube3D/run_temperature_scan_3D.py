@@ -6,7 +6,7 @@ from metropolis_hastings.metropolis import *
 from fitting_module.critical_exponents import fit_power_law
 import pickle
 
-N = (20,20,20);
+N = (30,30,30);
 lattice_size_name = str(N[0])+'x'+str(N[1])+'x'+str(N[2]);
 
 
@@ -27,45 +27,45 @@ simulation_data = dict(); #keys will be betas
 Lattice = 2 * np.random.randint(0, 2, N) - 1;
 
 ## ===============================================
-
+k_counter = 0;
 for K in beta_scan:
+
     lattice_history = list();
     epochs = 1000;
     print(K)
     p = 1 - np.exp(-2 * K);
     magn = list();
     if(K> 0.2): #as temperature get higher, the lattice will equilibrate faster
-        epochs = 400;
+        epochs = 500;
     if(K> 0.3):
-        epochs = 100;
+        epochs = 500;
+    #
+    # ## simulation_runs
+    # if(K > 0.3):
+    #     print('metropolis')
+    #     epochs = 100;
+    #     #run a metropolis hastings simulation
+    #     for t in range(epochs):
+    #         Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
+    #         magn.append(magnetization(Lattice));
+    #         if(t%100 == 0):
+    #             print('epoch: '+str(t))
+    #
+    #         lattice_history.append(Lattice);
 
-    ## simulation_runs
-    if(K > 0.3):
-        print('metropolis')
-        epochs = 100;
-        #run a metropolis hastings simulation
-        for t in range(epochs):
-            Lattice = metropolis_sim_epoch(Lattice, K, nearest_neighbors = 1);
+    for t in range(epochs):
+        Lattice = run_Wolff_epoch(Lattice, N, p);
+        if(t%400 == 0):
+            print(t);
+            # plt.imshow(Lattice)
+            # plt.show();
+        if(t > 100):
             magn.append(magnetization(Lattice));
-            if(t%100 == 0):
-                print('epoch: '+str(t))
 
-            lattice_history.append(Lattice);
+        lattice_history.append(Lattice);
 
-    else:
-        for t in range(epochs):
-            Lattice = run_Wolff_epoch(Lattice, N, p);
-            if(t%400 == 0):
-                print(t);
-                # plt.imshow(Lattice)
-                # plt.show();
-            if(t > 100):
-                magn.append(magnetization(Lattice));
-
-            lattice_history.append(Lattice);
-
-    simulation_data[K] = lattice_history;
-
+    simulation_data[k_counter] = lattice_history;
+    k_counter+=1
     M = np.mean(magn);
     mag_v_temp.append(M);
 
@@ -73,14 +73,15 @@ plt.figure();
 plt.plot(1/beta_scan, mag_v_temp)
 plt.show()
 
+## ============= SAVE LATTICE HISTORY DATA =====================##
+pickle.dump([simulation_data, epochs, beta_scan, N], open(lattice_size_name+'_Ising_3D_random_Lattice_Temp_Scan.p', 'wb'));
+## ==============================================================
+
 T_c = 1/4.511;
 ## fit power laws
 critical_mag = fit_power_law(1/beta_scan, mag_v_temp, T_c);
 print(critical_mag);
 
-## ============= SAVE LATTICE HISTORY DATA =====================##
-pickle.dump([simulation_data, epochs, beta_scan, N], open(lattice_size_name+'_Ising_3D_Lattice_Temp_Scan_large.p', 'wb'));
-## ==============================================================
 
 
 # vars = ['m per site', 'E per site', 'spin_corr', 'chi', 'heat_capacity'];

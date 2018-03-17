@@ -1,9 +1,11 @@
 from scipy.optimize import curve_fit
 import numpy as np
 
-def fit_power_law(x,y, T_c):
-    def fit_func(T, a, b):
-        return a * (T-T_c)**b
+
+def fit_func(T, T_c, a, b):
+    return a * abs(T_c - T) ** b
+def fit_power_law(x,y, f_fit = fit_func):
+
     params = curve_fit(fit_func, x, y)
     return params[0];
 

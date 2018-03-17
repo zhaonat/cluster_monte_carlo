@@ -12,7 +12,7 @@ dir = settings.ROOT_DIR+'numerical_analysis\\';
 
 #file = dir+'20x20x20_Ising_3D_Lattice_Temp_Scan.p';
 #file = dir+'Ising_4D_Lattice_Temp_Scan.p';
-file = dir+'30x30_Ising_2D_Lattice_Temp_Scan.p';
+file = dir+'30x30_Ising_2D_random_Lattice_Temp_Scan.p';
 
 [simulation_data, epochs, beta_scan, N] = pickle.load(open(file, 'rb'));
 print(str(len(simulation_data)) + ', ' + str(epochs))
