@@ -1,6 +1,6 @@
 import numpy as np
 from copy import copy
-from cluster_functions.getNN import *
+from core_functions.getNN import *
 import matplotlib.pyplot as plt
 from variable_calculations.order_measures import *
 ''' executes the SW algorithm by creating and operating on a single cluster at a time'''

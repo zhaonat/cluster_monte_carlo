@@ -1,5 +1,5 @@
 import numpy as np
-from cluster_functions.getNN import *
+from core_functions.getNN import *
 import time
 import matplotlib.pyplot as plt
 '''

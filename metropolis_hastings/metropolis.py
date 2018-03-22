@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from cluster_functions.getNN import getNN
+from core_functions.getNN import getNN
 from variable_calculations.order_measures import *
 
 def metropolis_simulation(Lattice, K, epochs, thermalization = 100, num_views = 1, view_lattice = False):

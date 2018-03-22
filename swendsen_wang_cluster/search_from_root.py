@@ -1,6 +1,6 @@
 import numpy as np
 from copy import copy
-from cluster_functions.getNN import *
+from core_functions.getNN import *
 
 def select_neighbour(Lattice, visited, cluster, K, N, s_i):
     '''

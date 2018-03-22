@@ -1,6 +1,6 @@
-from cluster_functions.getNN import getNN
+from core_functions.getNN import getNN
 import numpy as np
-
+from helper_functions import *
 
 # def SW_BFS(lattice, bonded, clusters, start, beta, J, nearest_neighbors = 1):
 #     '''
@@ -139,6 +139,7 @@ def SW_BFS(lattice, bonded, clusters, start, beta, J, nearest_neighbors = 1):
     return bonded, clusters, visited;
 
 ## basic tests of cluster generation
+import matplotlib.pyplot as plt
 #
 # Nx = 10; Ny = 10; Nz = 10;
 # N = (10,10,10)

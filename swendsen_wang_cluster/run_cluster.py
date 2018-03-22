@@ -1,8 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from copy import copy;
-from cluster_functions.graph_search import *
-from variable_calculations import order_measures as OM
+from swendsen_wang_cluster.graph_search import *
+
+
 #try to write it in general so it is applicable for any dimension on cubic lattice
 #also need periodic boundary condition
 

@@ -1,5 +1,5 @@
 import numpy as np
-from cluster_functions.getNN import getNN;
+from core_functions.getNN import getNN;
 import matplotlib.pyplot as plt
 from variable_calculations.order_measures import *
 

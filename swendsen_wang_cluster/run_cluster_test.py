@@ -1,4 +1,4 @@
-from Swendsen_Wang.graph_search import *
+from swendsen_wang_cluster.graph_search import *
 from variable_calculations import order_measures as OM
 #try to write it in general so it is applicable for any dimension on cubic lattice
 #also need periodic boundary condition
