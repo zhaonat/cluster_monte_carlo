@@ -6,3 +6,6 @@ Hastings algorithms solved by Cluster algorithms
 # exploration of critical dynamics with cluster algorithms
 temperature scans to evaluate critical exponents
 Compare with known literature values
+
+## Validation of the Cluster Algorithm
+![](figure_dir/Ising_Visualization.png?raw=true)
